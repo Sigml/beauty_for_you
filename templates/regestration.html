@@ -1,0 +1,52 @@
+{% extends '__base__.html' %}
+{% block content %}
+<body>
+<div class="login-form">
+
+<br>
+
+    <form action="" method="post">
+        {% csrf_token %}
+    <h2>Rejestracja użytkownika</h2>
+        {{ form.username }}
+        <br>
+        <br>
+        {{ form.first_name }}
+        <br>
+        <br>
+        {{ form.last_name }}
+        <br>
+        <br>
+        {{ form.email }}
+        <br>
+        <br>
+        {{ form.password }}
+        <br>
+        <br>
+        {{ form.password_confirmation }}
+        <br>
+        <br>
+
+
+    <button type="submit">Zarejestruj</button>
+    <br>
+    <div class="error-message">
+
+             {% if form.errors %}
+                         <span class="error-icon">&#10071;</span>
+            <p class="error">Podane hasła różnią się </p>
+        {% endif %}
+
+        {% for field in form %}
+            {% for error in field.errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        {% endfor %}
+
+        </div>
+
+
+    </form>
+</div>
+</body>
+{% endblock %}

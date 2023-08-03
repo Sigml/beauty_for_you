@@ -1,0 +1,15 @@
+{% extends "__base__.html" %}
+
+{% block content %}
+    <h1>Profil użytkownika</h1>
+
+    <p>Imię: {{ user_obj.first_name }}</p>
+
+    <p>Nazwisko: {{ user_obj.last_name }}</p>
+
+    <p>Email: {{ user_obj.email }}</p>
+
+    <a href="/user_update/" class="login-button">Edytuj profil</a>
+    <a href="/user/reset_password" class="login-button">Zmień hasło</a>
+    <a href="{% url 'my_reservation' %}" class="login-button">Moje wizyty</a>
+{% endblock %}

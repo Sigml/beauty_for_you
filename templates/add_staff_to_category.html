@@ -1,0 +1,28 @@
+{% extends '__base__.html' %}
+{% block content %}
+
+<body>
+<form action="" method="post">
+{%  csrf_token %}
+<label for="staff">Pracownik</label>
+    <select name="staff" id="staff">
+        {% for person in staff %}
+            <option value="{{ person.id }}">{{ person.name }}</option>
+        {% endfor %}
+    </select>
+<label for="category">Kategoria</label>
+    <select name="category" id="category">
+        {% for category in category_service %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+    </select>
+    <button class="login-button"   type="submit">Wyślij</button>
+<br>
+<br>
+{% if message %}
+    <p class="message">{{ message }}</p>
+{% endif %}
+</form>
+</body>
+
+{% endblock %}

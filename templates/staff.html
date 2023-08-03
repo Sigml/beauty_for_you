@@ -1,0 +1,19 @@
+{% extends '__base__.html' %}
+{% block content %}
+<body>
+<div class="staff">
+    {% for person in staff %}
+    <ul>
+        <li>Imię, Nazwisko: {{ person.name }}</li>
+        <li>numer komórkowy: {{ person.phone }}</li>
+        <li>stanowisko: {{ person.get_position_display }}</li>
+        <li>O sobie: {{ person.description }}</li>
+    <a class="login-button" href="/update_staff/{{ person.id }}">Zaktualizuj dane pracownika</a>
+    <a class="delete-button" href="/delete_staff/{{ person.id }}">Usuń pracownika</a>
+    </ul>
+    {% endfor %}
+
+    <a href="/add_staff">Dodaj pracownika</a>
+</div>
+</body>
+{% endblock %}

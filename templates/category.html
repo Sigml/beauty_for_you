@@ -1,0 +1,15 @@
+{% extends '__base__.html' %}
+{% block content %}
+<body>
+{% for el in category %}
+    <ul>
+        <li>{{ el.name }}</li>
+    <a class="delete-button" href="/delete_category_service/{{ el.id }}">usuń kategorię</a>
+    </ul>
+{% endfor %}
+
+<li>
+    <a href="/add_category">dodaj kategorie</a>
+</li>
+</body>
+{% endblock %}

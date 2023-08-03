@@ -1,0 +1,49 @@
+{% extends '__base__.html' %}
+{% block content %}
+<body>
+    <h1>Rezerwacja usługi</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+
+    <label for="staff">Pracownik:</label>
+        <select name="staff" id="staff">Pracownik:
+            {% for pesron in staff %}
+                <option value="{{ pesron.name }}">{{ pesron.name }}</option>
+            {% endfor %}
+        </select>
+        <label for="category_service">Typ Usługi:</label>
+        <select name="category_service" id="category_service">
+            {% for categoty in category_service %}
+                <option value="{{ categoty.name }}">{{ categoty.name }}</option>
+            {% endfor %}
+        </select>
+    <label for="service">Usługa:</label>
+              <select name="service" id="service">
+        {% for el in service %}
+
+            <option value="{{ el.name }}">{{ el.name }}</option>
+
+        {% endfor %}
+               </select>
+    <label for="date">Data:
+        <input type="date" id="date" name="date">
+    </label>
+
+
+    <label for="time">Godzina:</label>
+        <select name="time" id="time">
+            {% for time in all_times %}
+                    <option value="{{ time }}">{{ time }}</option>
+            {% endfor %}
+        </select>
+     <input type="submit" value="Zarezerwuj">
+    <br>
+    <br>
+    <div class="error-message">
+        {{ error_message }}
+    </div>
+        <H3>{{ message }}</H3>
+
+    </form>
+</body>
+{% endblock %}

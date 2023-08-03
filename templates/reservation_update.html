@@ -1,0 +1,31 @@
+{% extends '__base__.html' %}
+{% block content %}
+<form action="" method="post">
+{% csrf_token %}
+<body>
+    <h3>Data i czas rezerwacji:</h3>
+    <ul>
+        <li>{{ reservation.date }}</li>
+        <li>{{ reservation.time }}</li>
+    </ul>
+    <h3>Wybierz nowy termin:</h3>
+    <label for="date">Data:
+        <input type="date" id="date" name="date" >
+    </label>
+        <label for="time">Godzina:</label>
+        <select name="time" id="time">
+            {% for time in all_times %}
+                    <option value="{{ time }}">{{ time }}</option>
+            {% endfor %}
+        </select>
+     <input type="submit" value="Zarezerwuj">
+    <br>
+    <br>
+    <div class="error-message">
+        {{ error_message }}
+    </div>
+        <H3>{{ message }}</H3>
+
+</body>
+</form>
+{% endblock %}

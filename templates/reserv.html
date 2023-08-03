@@ -1,0 +1,21 @@
+
+{% extends "__base__.html" %}
+
+{% block content %}
+{%  load static %}
+<body>
+    <form action="" method="post">
+        {% csrf_token %}
+        <h1>Chcę umówić sie</h1>
+        <div class="categories">
+            {% for el in category_service %}
+                <ul>
+                    <li>
+                        <a href="{{ el.id }}"><h2>{{ el.name }}</h2></a>
+                    </li>
+                </ul>
+            {% endfor %}
+        </div>
+    </form>
+</body>
+{% endblock %}

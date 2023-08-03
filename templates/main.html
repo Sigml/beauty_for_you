@@ -1,0 +1,29 @@
+
+{% extends "__base__.html" %}
+
+{% block content %}
+{%  load static %}
+
+<body>
+    <ul class="inline-list">
+
+    <li><a href="/staff">Pracownicy</a></li>
+    <li><a href="/service">Usługi</a></li>
+    <li><a href="/reservation">Zarezerwuj wizytę</a></li>
+    <li><a href="/shop">Sklep</a></li>
+</ul>
+
+
+</body>
+
+    <li><a href="/admin">Panel administracyjny</a> (login: viktor, password: 1234567)</li>
+    <li><a href="/add_staff">Dodaj pracownika</a></li>
+    <li><a href="/add_category">Dodaj kategorię</a></li>
+    <li><a href="/category_service">Wszystkie kategorie</a></li>
+    <li><a href="/add_service">Dodaj usługę</a></li>
+    <li><a href="/add_category_shop">Dodaj kategorię do sklepu</a></li>
+    <li><a href="/add_product_shop">Dodaj produkt do sklepu</a></li>
+    <li><a href="/add_staff_to_category">dodaj pracownika do kategori</a></li>
+    <li><a href="/delete">Usun</a></li>
+
+{% endblock %}

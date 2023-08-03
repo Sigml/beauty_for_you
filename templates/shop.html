@@ -1,0 +1,47 @@
+{% extends '__base__.html' %}
+{% block content %}
+<body>
+<form action="" method="post">
+    {% csrf_token %}
+    {% for product in shop %}
+    <ul>
+        <li> Nazwa:
+            {{ product.name }}
+        </li>
+        <li>Opis:
+            {{ product.description }}
+        </li>
+         {% for category in product.categories.all %}
+        <li>Kategoria:
+            {{ category.category_name }}
+        </li>
+             {% endfor %}
+        <li>Cena:
+            {{ product.price }} zł
+        </li>
+    <a class="login-button" href="/shop_update_product/{{ product.id }}">Zaktualizuj produkt</a>
+    <a class="delete-button" href="/shop_delete_product/{{ product.id }}">Usuń produkt</a>
+    </ul>
+    {% endfor %}
+    <div class="pagination">
+        <span class="step-links">
+            {%  if shop.paginator.num_pages > 1 %}
+                {% if shop.has_previous %}
+                    <a href="?page={{ shop.previous_page_number }}"> < poprzednia </a> |
+                {% endif %}
+
+                <span class="current">
+                    {%  for page in shop.paginator.page_range %}
+                        <a href="?page={{ page }}"> {{ page }} </a> |
+                    {% endfor %}
+                </span>
+
+                {% if shop.has_next %}
+                    <a href="?page={{ shop.next_page_number }}"> następna > </a>
+                {% endif %}
+            {%  endif %}
+        </span>
+    </div>
+</form>
+</body>
+{% endblock %}

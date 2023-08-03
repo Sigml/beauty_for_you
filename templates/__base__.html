@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block styles %}
+                <link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}">
+    {% endblock %}
+    <meta charset="UTF-8">
+    <title>Beauty_4_you</title>
+
+</head>
+<body>
+<header class="header-container">
+    <div class="logo">
+        <h1><a href="/">Beauty For You</a></h1>
+    </div>
+    <div class="login-section">
+        {% if user.is_authenticated %}
+        <span class="user-greeting">Witaj, <a href="/user/detail/{{ user.id }}">{{ user.username }}</a></span>
+         <a href="{% url 'logout' %}" class="login-button">Wyloguj</a>
+        {% else %}
+        <a href="{% url 'login' %}" class="login-button">Zaloguj się</a>
+        {% endif %}
+    </div>
+</header>
+
+
+        {% block content %}
+
+        {% endblock %}
+
+</body>
+</html>

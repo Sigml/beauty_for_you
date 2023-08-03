@@ -1,0 +1,19 @@
+{% extends '__base__.html' %}
+{% block content %}
+<body>
+    {% for el in service %}
+        <ul>
+        <li>Nazwa usługi:{{ el.name }}</li>
+        <li>Cena:{{ el.price }}</li>
+        <li>Czas trwania:{{ el.duration}}</li>
+        <li>Kategorie:
+
+                {% for category in el.category.all %}
+                    {{ category.name }}</li>
+                {% endfor %}
+        <a class="delete-button" href="/delete_service/{{ el.id}}/">usuń usługę</a>
+        </ul>
+
+    {% endfor %}
+</body>
+{% endblock %}

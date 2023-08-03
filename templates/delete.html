@@ -1,0 +1,13 @@
+{% extends '__base__.html' %}
+{% block content %}
+<body>
+   Następujący obiekt zostanie usunięty {{ object }}. Czy jesteś pewien?
+   <form method="post">
+     {% csrf_token %}
+     <input type="submit" value="Tak"/>
+   </form>
+    <form method="GET" action="/">
+      <input type="submit" value="Nie">
+    </form>
+</body>
+{% endblock %}
