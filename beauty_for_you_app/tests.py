@@ -6,21 +6,27 @@ from datetime import date, time
 from .models import Staff, Category_service, Services, Reservation
 from .form import AddStaffForm, UserCreateForm
 
-
 class TestStaffCreate(TestCase):
-    def test_get(self):
-        response = self.client.get(reverse('create_staff'))
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.user.is_staff = True
+        self.user.save()
 
+    def test_get(self):
+        self.client.login(username='testuser', password='testpassword')
+        url = reverse('create_staff')
+        response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         self.assertIsInstance(response.context['form'], AddStaffForm)
+
 
     def test_post(self):
         create_staff = {
             'first_name': 'first_name',
             'last_name': 'last_name',
-            'phone': 555555555,
+            'phone': '555555555',
             'position': 1,
-            'description': 'descriptiondescription'
+            'description': 'descriptiondescription',
         }
 
         initial_staff_count = Staff.objects.count()
@@ -29,9 +35,11 @@ class TestStaffCreate(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-        self.assertEqual(Staff.objects.count(), initial_staff_count + 1)
-
         new_staff = Staff.objects.last()
+
+        self.assertEqual(Staff.objects.count(), initial_staff_count +1)
+
+        self.assertIsNotNone(new_staff)
         self.assertEqual(new_staff.first_name, 'first_name')
         self.assertEqual(new_staff.last_name, 'last_name')
         self.assertEqual(new_staff.phone, '555555555')
@@ -123,3 +131,38 @@ class TestReservation(TestCase):
         self.assertEqual(reservation.time, time(14, 0))
         self.assertIn(self.service, reservation.service.all())
         self.assertIn(self.category_service, reservation.category_service.all())
+
+class ServiceUpdateViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.user.is_staff = True
+        self.user.save()
+
+        self.category = Category_service.objects.create(name='Testowa kategoria')
+        self.service = Services.objects.create(name='Testowa usługa', price=100, duration=60)
+        self.service.category.add(self.category)
+
+
+        self.url = reverse('service_update', kwargs={'pk': self.service.pk})
+
+    def test_service_update(self):
+        self.client.login(username='testuser', password='testpassword')
+
+        updated_data = {
+            'name': 'Zaktualizowana usługa',
+            'price': 150,
+            'duration': 90,
+            'category': [self.category.pk],
+        }
+
+        response = self.client.post(self.url, data=updated_data)
+
+        self.assertEqual(response.status_code, 302)
+        expected_url = reverse('service_list')
+
+        updated_service = Services.objects.get(pk=self.service.pk)
+
+        self.assertEqual(updated_service.name, updated_data['name'])
+        self.assertEqual(updated_service.price, updated_data['price'])
+        self.assertEqual(updated_service.duration, updated_data['duration'])
+        self.assertListEqual(list(updated_service.category.all()), [self.category])

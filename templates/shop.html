@@ -19,8 +19,10 @@
         <li>Cena:
             {{ product.price }} zł
         </li>
+    {% if user.is_staff %}
     <a class="login-button" href="/shop_update_product/{{ product.id }}">Zaktualizuj produkt</a>
     <a class="delete-button" href="/shop_delete_product/{{ product.id }}">Usuń produkt</a>
+    {% endif %}
     </ul>
     {% endfor %}
     <div class="pagination">

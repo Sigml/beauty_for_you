@@ -21,25 +21,25 @@ from django.urls import path
 from beauty_for_you_app.views import main, AddStaffListView, StaffView, AddCategoryServiceCreateView, \
     CategoryServiceListView, \
     AddServiseCreateView, ServiceListView, \
-    CategoryServiceDeleteView, UserCreateView, LoginView, LogoutView, ReservationCreateView, ReservationCreateView_v2, \
+    CategoryServiceDeleteView, UserCreateView, LoginView, LogoutView, ReservationCreateView, \
     AddCategoryShopCreateView, AddProductShopCreateView, ShopListView, UserUpdateView, UserDetailView, \
     PasswordResetView, MyReservationView, ServiceDeleteView, StaffDeleteView, AddStaffToCategoryView, \
-    ReservationDeleteView, ReservationUpdateView, StaffUpdateView, ProductUpdateView, ProductDeleteView
+    ReservationDeleteView, ReservationUpdateView, StaffUpdateView, ProductUpdateView, ProductDeleteView, \
+    ServiceUpdateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', main, name='home'),
-    path('add_staff/', AddStaffListView.as_view(), name='create_staff'),
+    path('', main ,name='home'),
+    path('add_staff/',AddStaffListView.as_view(), name='create_staff'),
     path('staff/', StaffView.as_view(), name='staff'),
     path('add_category/', AddCategoryServiceCreateView.as_view()),
     path('category_service/', CategoryServiceListView.as_view()),
     path('add_service/', AddServiseCreateView.as_view()),
-    path('service/', ServiceListView.as_view()),
+    path('service/', ServiceListView.as_view(), name='service_list'),
     path('register/', UserCreateView.as_view(), name='register'),
     path('accounts/login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('reservation/', ReservationCreateView.as_view()),
-    path('reservation/<int:category_service_id>/', ReservationCreateView_v2.as_view(), name='reservation'),
+    path('reservation/<int:category_service_id>/', ReservationCreateView.as_view(), name='reservation'),
     path('add_category_shop/', AddCategoryShopCreateView.as_view()),
     path('add_product_shop/', AddProductShopCreateView.as_view()),
     path('shop/', ShopListView.as_view()),
@@ -54,8 +54,7 @@ urlpatterns = [
     path('delete_reservation/<int:pk>/', ReservationDeleteView.as_view(), name='delete_reservation'),
     path('update_reservation/<int:reservation_id>', ReservationUpdateView.as_view(), name='update_reservation'),
     path('update_staff/<int:pk>', StaffUpdateView.as_view()),
-    path('shop_update_product/<int:pk>', ProductUpdateView.as_view()),
-    path('shop_delete_product/<int:pk>', ProductDeleteView.as_view()),
-
-
+    path('shop_update_product/<int:pk>/', ProductUpdateView.as_view()),
+    path('shop_delete_product/<int:pk>/', ProductDeleteView.as_view()),
+    path('update_service/<int:pk>/', ServiceUpdateView.as_view(), name='service_update')
 ]

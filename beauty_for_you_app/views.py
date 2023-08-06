@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
@@ -13,45 +13,85 @@ from .models import Staff, Services, Category_service, Reservation, Product, Cat
 
 
 def main(request):
-    return render(request, 'main.html')
+    """
+    View function for the main page of the application.
+    Parameters:
+        request (HttpRequest): An object representing the HTTP request.
+    Returns:
+        HttpResponse: An HTTP response containing the 'main.html' template with the 'category_service' context.
+    """
+    category_service = Category_service.objects.all()
+    return render(request, 'main.html', {'category_service': category_service})
+
+
+class StaffRequiredMixin(UserPassesTestMixin, LoginRequiredMixin):
+    """
+    Mixin to check if the user is staff or has appropriate permissions.
+    """
+
+    def test_func(self):
+        return self.request.user.is_staff
 
 
 class StaffView(View):
+    """
+    The view for the 'staff' view retrieves and displays all data from the 'staff' model."
+    """
+
     def get(self, request):
         staff = Staff.objects.all()
         return render(request, 'staff.html', {'staff': staff, })
 
 
-class AddStaffListView(CreateView):
+class AddStaffListView(StaffRequiredMixin,CreateView):
+    """
+    The view for the 'staff' view allows for adding a new employee.
+    """
     form_class = AddStaffForm
     template_name = 'form.html'
     success_url = '/staff'
 
 
-class AddServiseCreateView(CreateView):
+class AddServiseCreateView(StaffRequiredMixin, CreateView):
+    """
+    The view for adding a new service.
+    """
     form_class = AddServiceForm
     template_name = 'form.html'
     success_url = '/service'
 
 
 class ServiceListView(View):
+    """
+    The view for the 'service' view retrieves and displays all data from the 'service' model."
+    """
     def get(self, request):
         service = Services.objects.all()
         return render(request, 'service.html', {'service': service})
 
 
-class AddCategoryServiceCreateView(CreateView):
+class AddCategoryServiceCreateView(StaffRequiredMixin, CreateView):
+    """
+    A view that allows staff users to add a new category service.
+    """
     form_class = AddCategoryServiceForm
     template_name = 'form.html'
     success_url = '/category_service'
 
 
 class CategoryServiceListView(View):
+    """
+    The view for the 'Category_service' view retrieves and displays all data from the 'Category_service' model."
+    """
     def get(self, request):
         category = Category_service.objects.all()
         return render(request, 'category.html', {'category': category})
 
+
 class UserCreateView(FormView):
+    """
+    A view that handles user registration and account creation.
+    """
     form_class = UserCreateForm
     template_name = "regestration.html"
     success_url = '/'
@@ -64,6 +104,9 @@ class UserCreateView(FormView):
 
 
 class LoginView(View):
+    """
+    A view that handles user login functionality.
+    """
     def get(self, request):
         form = LoginForm
         return render(request, 'login.html', {'form': form})
@@ -82,19 +125,18 @@ class LoginView(View):
 
 
 class LogoutView(View):
+    """
+    A view that handles user logout functionality.
+    """
     def get(self, request):
         logout(request)
         return redirect('/')
 
 
 class ReservationCreateView(LoginRequiredMixin, View):
-    def get(self, request):
-        reservation = Reservation.objects.all()
-        category_service = Category_service.objects.all()
-        return render(request, 'reserv.html', {'reservation': reservation, 'category_service': category_service})
-
-
-class ReservationCreateView_v2(LoginRequiredMixin,View):
+    """
+    The view that handles the 'reservation' functionality and allows data to be saved to the database.
+    """
     def get(self, request, category_service_id):
         user = request.user.username
         staff = Staff.objects.filter(category_staff__name=category_service_id)
@@ -136,19 +178,28 @@ class ReservationCreateView_v2(LoginRequiredMixin,View):
         return render(request, "reservation.html", {'message': "Rezerwacja została przyjęta"})
 
 
-class AddCategoryShopCreateView(CreateView):
+class AddCategoryShopCreateView(StaffRequiredMixin, CreateView):
+    """
+    A view that allows staff users to add a new category shop.
+    """
     form_class = AddCategoryShopForm
     template_name = 'form.html'
     success_url = "/"
 
 
-class AddProductShopCreateView(CreateView):
+class AddProductShopCreateView(StaffRequiredMixin, CreateView):
+    """
+    A view that allows staff users to add a new product in shop.
+    """
     form_class = AddProductShopForm
     template_name = 'form.html'
     success_url = '/shop'
 
 
 class ShopListView(View):
+    """
+    A view that displays a paginated list of products in the shop
+    """
     def get(self, request):
         shop = Product.objects.all()
         paginator = Paginator(shop, 10)
@@ -161,6 +212,9 @@ class ShopListView(View):
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    A view that allows logged-in users to update their profile information.
+    """
     model = User
     form_class = UserUpdateForm
     template_name = 'form.html'
@@ -173,12 +227,18 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
+    """
+    A view that displays detailed information about a user's profile.
+    """
     model = User
     template_name = 'user.html'
     context_object_name = 'user_obj'
 
 
 class PasswordResetView(LoginRequiredMixin, FormView):
+    """
+    A view that allows authenticated users to reset their password.
+    """
     form_class = PasswordResetForm
     template_name = 'form.html'
     success_url = '/'
@@ -193,6 +253,9 @@ class PasswordResetView(LoginRequiredMixin, FormView):
 
 
 class MyReservationView(LoginRequiredMixin, ListView):
+    """
+    A view that displays a list of reservations made by the authenticated user.
+    """
     model = Reservation
     template_name = 'my_reservation.html'
     context_object_name = 'reservations'
@@ -203,79 +266,124 @@ class MyReservationView(LoginRequiredMixin, ListView):
         return queryset
 
 
-class ServiceDeleteView(LoginRequiredMixin, DeleteView):
+class ServiceDeleteView(StaffRequiredMixin, DeleteView):
+    """
+    A view that allows staff users to delete a service
+    """
     model = Services
     template_name = 'delete.html'
     success_url = '/service'
 
-class CategoryServiceDeleteView(LoginRequiredMixin, DeleteView):
+
+class ServiceUpdateView(StaffRequiredMixin, UpdateView):
+    """
+    A view that allows staff users to update service.
+    """
+    model = Services
+    fields = ('name', 'duration', 'price', 'category')
+    template_name = 'form.html'
+    success_url = '/service'
+
+
+class CategoryServiceDeleteView(StaffRequiredMixin, DeleteView):
+    """
+    A view that allows staff users to delete a category service.
+    """
     model = Category_service
     template_name = 'delete.html'
     success_url = '/category_service'
 
-class StaffDeleteView(LoginRequiredMixin,DeleteView):
+
+class StaffDeleteView(StaffRequiredMixin, DeleteView):
+    """
+     A view that allows staff users to delete a staff member
+    """
     model = Staff
     template_name = 'delete.html'
     success_url = '/staff'
 
-class AddStaffToCategoryView(LoginRequiredMixin, View):
+
+class AddStaffToCategoryView(StaffRequiredMixin, View):
+    """
+    A view that allows staff users to assign staff members to a category service.
+    """
+
     def get(self, request):
         staff = Staff.objects.all()
         category_service = Category_service.objects.all()
         context = {
-            'staff':staff,
-            "category_service":category_service
+            'staff': staff,
+            "category_service": category_service
         }
-        return render(request, 'add_staff_to_category.html',context)
+        return render(request, 'add_staff_to_category.html', context)
 
     def post(self, request):
         category_service = request.POST.get('category')
         staff = request.POST.get('staff')
-        category_staff = Category_staff.objects.create()
-        category_staff.name.set([category_service])
-        category_staff.staff.set([staff])
-        return render(request, 'add_staff_to_category.html', {'message': 'pracownik dodany'})
+        if category_service and staff:
+            category_staff = Category_staff.objects.create()
+            category_staff.name.set([category_service])
+            category_staff.staff.set([staff])
+            return render(request, 'add_staff_to_category.html', {'message': 'pracownik dodany'})
+        else:
+            return render(request, 'add_staff_to_category.html', {'message': 'Wystąpił błąd. Spróbuj ponownie.'})
 
 
 class ReservationDeleteView(LoginRequiredMixin, DeleteView):
+    """
+    A view that allows authenticated users to delete their reservation
+    """
     model = Reservation
     template_name = 'delete.html'
     success_url = '/my_reservation'
 
+
 class ReservationUpdateView(View):
+    """
+    A view that allows users to update their reservation
+    """
     def get(self, request, reservation_id):
-        reservation= Reservation.objects.get(pk=reservation_id)
+        reservation = Reservation.objects.get(pk=reservation_id)
         all_times = ('07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00',)
         return render(request, 'reservation_update.html', {'reservation': reservation, 'all_times': all_times})
 
     def post(self, request, reservation_id):
-            date = request.POST.get('date')
-            time = request.POST.get('time')
-            selected_date = datetime.strptime(date, '%Y-%m-%d').date()
-            if selected_date.weekday() >= 5:
-                return render(request, 'reservation_update.html', {'error_message': 'Nie pracujemy w weekendy'})
-            elif datetime.strptime(date, '%Y-%m-%d').date() < datetime.now().date():
-                return render(request, 'reservation_update.html', {'error_message': 'data juz mineła'})
-            else:
-                reservation = Reservation.objects.update(date=date, time=time)
-            return redirect("my_reservation")
+        date = request.POST.get('date')
+        time = request.POST.get('time')
+        selected_date = datetime.strptime(date, '%Y-%m-%d').date()
+        if selected_date.weekday() >= 5:
+            return render(request, 'reservation_update.html', {'error_message': 'Nie pracujemy w weekendy'})
+        elif datetime.strptime(date, '%Y-%m-%d').date() < datetime.now().date():
+            return render(request, 'reservation_update.html', {'error_message': 'data juz mineła'})
+        else:
+            reservation = Reservation.objects.update(date=date, time=time)
+        return redirect("my_reservation")
 
 
-class StaffUpdateView(LoginRequiredMixin ,UpdateView):
+class StaffUpdateView(StaffRequiredMixin, UpdateView):
+    """
+    A view that allows staff users to update staff member information
+    """
     model = Staff
     fields = ('first_name', 'last_name', 'phone', 'position', 'description')
     template_name = 'form.html'
     success_url = '/staff'
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(StaffRequiredMixin, UpdateView):
+    """
+    A view that allows staff users to update product information
+    """
     model = Product
     fields = ('name', 'description', 'price', 'categories')
     template_name = 'form.html'
     success_url = '/shop'
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+
+class ProductDeleteView(StaffRequiredMixin, DeleteView):
+    """
+    A view that allows staff users to delete a product
+    """
     model = Product
     template_name = 'delete.html'
     success_url = '/shop'
-

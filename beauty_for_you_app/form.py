@@ -76,7 +76,7 @@ class UserCreateForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-    login = forms.CharField(label='username', widget=forms.TextInput(attrs={
+    login = forms.CharField(label='email', widget=forms.TextInput(attrs={
         'class': 'form-control',
         "placeholder": "username"}))
 

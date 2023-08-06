@@ -11,7 +11,10 @@
                 {% for category in el.category.all %}
                     {{ category.name }}</li>
                 {% endfor %}
+        {% if user.is_staff %}
         <a class="delete-button" href="/delete_service/{{ el.id}}/">usuń usługę</a>
+        <a class="login-button" href="/update_service/{{ el.id}}/">Zaktualizuj usługę</a>
+        {% endif %}
         </ul>
 
     {% endfor %}

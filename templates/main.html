@@ -5,17 +5,26 @@
 {%  load static %}
 
 <body>
-    <ul class="inline-list">
-
+    <div class="inline-list">
+        <details>
+        <summary>Zarezerwuj wizytę</summary>
+        <ul>
+            {% for el in category_service %}
+                <li>
+                    <a href="/reservation/{{ el.id }}">{{ el.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </details>
     <li><a href="/staff">Pracownicy</a></li>
     <li><a href="/service">Usługi</a></li>
-    <li><a href="/reservation">Zarezerwuj wizytę</a></li>
     <li><a href="/shop">Sklep</a></li>
-</ul>
+</div>
 
 
-</body>
 
+{% if user.is_staff %}
+<ul class="inline-list">
     <li><a href="/admin">Panel administracyjny</a> (login: viktor, password: 1234567)</li>
     <li><a href="/add_staff">Dodaj pracownika</a></li>
     <li><a href="/add_category">Dodaj kategorię</a></li>
@@ -24,6 +33,7 @@
     <li><a href="/add_category_shop">Dodaj kategorię do sklepu</a></li>
     <li><a href="/add_product_shop">Dodaj produkt do sklepu</a></li>
     <li><a href="/add_staff_to_category">dodaj pracownika do kategori</a></li>
-    <li><a href="/delete">Usun</a></li>
-
+{% endif %}
+</ul>
+</body>
 {% endblock %}

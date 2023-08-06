@@ -8,8 +8,10 @@
         <li>numer komórkowy: {{ person.phone }}</li>
         <li>stanowisko: {{ person.get_position_display }}</li>
         <li>O sobie: {{ person.description }}</li>
+        {% if user.is_staff %}
     <a class="login-button" href="/update_staff/{{ person.id }}">Zaktualizuj dane pracownika</a>
     <a class="delete-button" href="/delete_staff/{{ person.id }}">Usuń pracownika</a>
+        {% endif %}
     </ul>
     {% endfor %}
 

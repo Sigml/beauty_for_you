@@ -7,7 +7,6 @@
     padding: 10px;
 }
 
-
 /* Styl dla logo */
 .logo h1 {
     font-family: 'Snell Roundhand', cursive;
@@ -52,8 +51,6 @@
     background-color: darkorange;
 }
 
-
-
 /* Style dla komunikatu powitalnego z imieniem użytkownika */
 .user-greeting {
     color: #333;
@@ -61,8 +58,7 @@
     padding: 8px 16px;
 }
 
-
-/* Style dla listy w jednej linii */
+ /*Style dla listy w jednej linii */
 .inline-list {
     display: flex;
     justify-content: flex-end;
@@ -75,10 +71,25 @@
     margin-left: 20px;
 }
 
-.inline-list li:first-child {
-    margin-left: 20px;
+.inline-list details {
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
 }
 
+.inline-list summary::-webkit-details-marker {
+    display: none;
+}
+
+.inline-list details[open] > ul {
+    display: block;
+    margin-top: 10px;
+    margin-left: -50px;
+}
+
+.inline-list details:not([open]) > ul {
+    display: none;
+}
 /* Style dla login */
 .login-form {
     text-align: center;
@@ -245,7 +256,6 @@ body {
 
 ul {
     list-style-type: none;
-    padding: 0;
     margin-bottom: 20px;
     background-color: #fff;
     border-radius: 8px;
